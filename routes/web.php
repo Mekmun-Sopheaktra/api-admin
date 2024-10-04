@@ -15,7 +15,6 @@ use Illuminate\Support\Facades\Route;
 //    return redirect()->route('dashboard');
 //});
 
-Route::view('/', 'dashboard');
 Route::middleware([
     'auth:sanctum',
     config('jetstream.auth_session'),

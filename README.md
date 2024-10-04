@@ -96,4 +96,3 @@ php artisan test
 
 Feel free to contribute and improve this project!
 
-Create by Ayden Gill
