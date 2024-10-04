@@ -5,8 +5,6 @@
             <script>
                 document.write(new Date().getFullYear());
             </script>
-            , made with ❤️ by
-            <a href="https://soheilkhaledabadi.ir" target="_blank" class="footer-link fw-bolder">Soheil khaledabadi</a>
         </div>
         </div>
     </div>

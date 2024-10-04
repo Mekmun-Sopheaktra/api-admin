@@ -158,7 +158,7 @@
     <section id="about" class="content-section">
         <h1>About Me 👨‍💻</h1>
         <p>
-            Welcome to my personal website. I'm Soheil Khaledabadi, a passionate backend developer dedicated to crafting
+            Welcome to my personal website. a passionate backend developer dedicated to crafting
             innovative software solutions. My objective is to transform ideas into reality and continually enhance my
             skills.
         </p>
@@ -226,7 +226,6 @@
 
 
     <footer>
-        <p>&copy; 2023 <a href="https://soheilkhaledabadi.ir">soheil khaledabadi</a></p>
     </footer>
 </body>
 
