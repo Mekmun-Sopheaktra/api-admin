@@ -2,13 +2,22 @@
 
 namespace App\Http\Middleware;
 
+use App\Models\User;
 use Closure;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class CheckAdminApi
 {
     public function handle(Request $request, Closure $next)
     {
+        if (!auth()->check()) {
+            $user = User::where('email', $request->email)->first();
+            if ($user) {
+                Auth::setUser($user);
+            }
+        }
+
         if (auth()->check() && (auth()->user()->is_superuser || auth()->user()->is_staff)) {
             return $next($request);
         }
