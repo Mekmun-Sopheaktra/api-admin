@@ -9,8 +9,8 @@ use App\Livewire\Users\All as AllUsers;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
-    $user = \App\Models\User::first();
-    auth()->login($user);
+//    $user = \App\Models\User::first();
+//    auth()->login($user);
 
     return redirect()->route('dashboard');
 });
