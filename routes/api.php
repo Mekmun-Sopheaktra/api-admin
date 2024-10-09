@@ -10,16 +10,20 @@ use App\Http\Controllers\api\v1\NotificationController;
 use App\Http\Controllers\api\v1\OrderController;
 use App\Http\Controllers\api\v1\ProductController;
 use App\Http\Controllers\api\v1\ProfileController;
+use App\Http\Controllers\Auth\VerificationController;
 use Illuminate\Support\Facades\Route;
 
 Route::prefix('v1')->group(function () {
     Route::post('login', [AuthController::class, 'Login'])->name('api.login');
     Route::post('register', [AuthController::class, 'Register'])->name('api.register');
+
+    Route::get('email/verify/{id}', [VerificationController::class, 'verify'])->name('verification.verify'); // Make sure to keep this as your route name
+    Route::get('email/resend', [VerificationController::class, 'resend'])->name('verification.resend');
 });
 
 //user routes
 Route::prefix('v1')->middleware('auth:sanctum')->group(function () {
-
+    Route::get('/permission', [AuthController::class, 'Permission']);
     Route::get('profile', [ProfileController::class, 'index'])->name('api.profile');
     Route::post('profile', [ProfileController::class, 'update'])->name('api.update.profile');
     Route::get('home', [HomeController::class, 'index'])->name('api.home');

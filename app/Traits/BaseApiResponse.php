@@ -17,6 +17,19 @@ trait BaseApiResponse
         ], $code);
     }
 
+    //success response login
+    public function successLogin($data, $permission, ?string $title = null, ?string $message = null, int $code = 200): JsonResponse
+    {
+        $alert = ($title !== null || $message !== null) ? ['title' => $title, 'message' => $message] : null;
+
+        return response()->json([
+            'result' => $data,
+            'permission' => $permission,
+            'status' => true,
+            'alert' => $alert,
+        ], $code);
+    }
+
     public function failed($data, ?string $title = null, ?string $message = null, int $code = 500): JsonResponse
     {
         $alert = ($title !== null || $message !== null) ? ['title' => $title, 'message' => $message] : null;

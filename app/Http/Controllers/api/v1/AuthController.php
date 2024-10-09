@@ -8,12 +8,14 @@ use App\Http\Requests\Auth\LoginRequest;
 use App\Http\Requests\Auth\RegisterRequest;
 use App\Models\User;
 use App\Traits\BaseApiResponse;
+use App\Traits\CheckUserPermission;
+use Illuminate\Auth\Events\Registered;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Hash;
 
 class AuthController extends Controller
 {
-    use BaseApiResponse;
+    use BaseApiResponse, CheckUserPermission;
 
     public function Login(LoginRequest $request): JsonResponse
     {
@@ -25,8 +27,9 @@ class AuthController extends Controller
             }
 
             $token = $user->createToken('token_base_name')->plainTextToken;
+            $permission = $this->userPermissionRole($user);
 
-            return $this->success($token, 'Login', 'Login successful');
+            return $this->successLogin($token, $permission,'Login', 'Login successful');
         } catch (Exception $exception) {
             return $this->failed($exception->getMessage(), 'Error', 'Error form server');
         }
@@ -34,15 +37,41 @@ class AuthController extends Controller
 
     public function Register(RegisterRequest $request): JsonResponse
     {
+        // Check if the user has already registered recently
+        if (session('registered_time', false) && now()->diffInMinutes(session('registered_time')) < 1) {
+            return $this->failed('You have already registered. Please check your email for verification.', 'Error', 'Error from server', 429);
+        }
+
         try {
-            $user = User::query()
-                ->select('id')
-                ->create($request->all());
+            $user = User::query()->create($request->all());
             $token = $user->createToken('token_base_name')->plainTextToken;
+
+            $user->sendEmailVerificationNotification(); // This sends the email
+
+            session(['registered_time' => now()]); // Store the time of registration
 
             return $this->success($token, 'Registration', 'Registration successful', 201);
         } catch (Exception $exception) {
-            return $this->failed($exception->getMessage(), 'Error', 'Error form server');
+            return $this->failed($exception->getMessage(), 'Error', 'Error from server');
         }
     }
+
+    public function Permission(): JsonResponse
+    {
+        $auth = auth()->user();
+        if (!$auth) {
+            $permissions = $this->userPermissionRole($auth);
+            return $this->success($permissions, 'Permission', 'Public permissions found');
+        }
+
+        try {
+            $permissions = $this->userPermissionRole($auth);
+            $role = $this->userPermission($auth);
+            return $this->success($permissions, 'Permission '.$role, 'Permissions found');
+
+        } catch (Exception $exception) {
+            return $this->failed($exception->getMessage(), 'Error', 'Error from server');
+        }
+    }
+
 }

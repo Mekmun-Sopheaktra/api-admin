@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers\api\v1;
 
-use App\Constants\OrderConstants;
+use App\Constants\RoleConstants;
 use App\Http\Controllers\Controller;
 use App\Traits\BaseApiResponse;
 use Illuminate\Support\Facades\Log;
@@ -34,7 +34,7 @@ class OrderController extends Controller
                     'code' => $order->code,
                     'products' => $this->mapProducts($order->products),
                     'shipping_type' => $this->convertShippingType($order->method),
-                    'status' => OrderConstants::getStatusFromString($order->status),
+                    'status' => RoleConstants::getStatusFromString($order->status),
                     'address' => $this->mapAddress($order->address),
                     'created_at' => $order->created_at,
                 ];

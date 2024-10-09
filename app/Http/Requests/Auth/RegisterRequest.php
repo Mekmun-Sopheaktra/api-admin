@@ -2,12 +2,12 @@
 
 namespace App\Http\Requests\Auth;
 
-use App\Traits\FailValidation;
+use App\Traits\CheckUserPermission;
 use Illuminate\Foundation\Http\FormRequest;
 
 class RegisterRequest extends FormRequest
 {
-    use FailValidation;
+    use CheckUserPermission;
 
     public function authorize(): bool
     {

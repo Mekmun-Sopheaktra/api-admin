@@ -2,12 +2,12 @@
 
 namespace App\Http\Requests\Comment;
 
-use App\Traits\FailValidation;
+use App\Traits\CheckUserPermission;
 use Illuminate\Foundation\Http\FormRequest;
 
 class StoreComment extends FormRequest
 {
-    use FailValidation;
+    use CheckUserPermission;
 
     public function authorize(): bool
     {
