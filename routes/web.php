@@ -10,9 +10,7 @@ use App\Livewire\Users\All as AllUsers;
 use Illuminate\Support\Facades\Route;
 
 //route home
-Route::get('/', function () {
-    return view('dashboard');
-})->name('home');
+Route::get('/', [WebAuthController::class, 'home'])->name('home');
 
 //register route with controller
 Route::get('register', [WebAuthController::class, 'showRegistrationForm'])->name('register');

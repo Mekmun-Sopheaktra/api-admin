@@ -54,4 +54,12 @@ class WebAuthController extends Controller {
         Auth::logout();
         return redirect()->route('login');
     }
+
+    //home route check if user already login to redirect to dashboard or login page
+    public function home() {
+        if (Auth::check()) {
+            return view('dashboard');
+        }
+        return view('auth.login');
+    }
 }
