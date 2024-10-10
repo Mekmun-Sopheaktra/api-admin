@@ -1,6 +1,6 @@
 <?php
 
-use App\Http\Controllers\Auth\VerificationController;
+use App\Http\Controllers\Auth\WebAuthController;
 use App\Livewire\Categories\All as AllCategories;
 use App\Livewire\ProductGallery\Add as AddGallery;
 use App\Livewire\ProductGallery\All as AllGallery;
@@ -9,12 +9,27 @@ use App\Livewire\Products\All as AllProducts;
 use App\Livewire\Users\All as AllUsers;
 use Illuminate\Support\Facades\Route;
 
+//route home
 Route::get('/', function () {
-//    $user = \App\Models\User::first();
-//    auth()->login($user);
+    return view('dashboard');
+})->name('home');
 
-    return redirect()->route('dashboard');
-});
+//register route with controller
+Route::get('register', [WebAuthController::class, 'showRegistrationForm'])->name('register');
+Route::post('register', [WebAuthController::class, 'register']);
+//register done
+Route::get('register-done', function() {
+    return view('auth.register-done');
+})->name('register.done');
+//register fail
+Route::get('register-fail', function() {
+    return view('auth.register-fail');
+})->name('register.fail');
+
+Route::get('/account/status', [WebAuthController::class, 'showStatus'])->middleware('auth')->name('verification-status');
+//logout route
+Route::post('logout', [WebAuthController::class, 'logout'])->name('logout');
+
 Route::middleware([
     'auth:sanctum',
     config('jetstream.auth_session'),
@@ -45,5 +60,5 @@ Route::middleware([
 //})->middleware(['auth', 'signed'])->name('verification.verify');
 
 Route::prefix('v1')->group(function () {
-    Route::get('email/verify/{id}/{hash}', [VerificationController::class, 'verify'])->name('verification.verify');
+    Route::get('email/verify/{id}/{hash}', [WebAuthController::class, 'verify'])->name('web.verification.verify');
 });

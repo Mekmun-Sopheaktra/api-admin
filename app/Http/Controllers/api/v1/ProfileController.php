@@ -18,7 +18,7 @@ class ProfileController extends Controller
     {
         return $this->success([
             'name' => auth()->user()->name,
-            'profile_url' => secure_asset('storage/'.auth()->user()->profile_photo_path),
+            'profile_url' => secure_asset('storage/'.auth()->user()->profile_photo_path) ?? config('image.avatar_url'),
             'age' => auth()->user()->age ?? 0,
         ]);
     }
@@ -33,15 +33,15 @@ class ProfileController extends Controller
         }
         $user->save();
 
-        // Set notification 
+        // Set notification
         $user->notifications()->create([
             'title' => 'Profile Updated',
             'description' => 'Your profile has been updated successfully',
         ]);
-        
+
         return $this->success([
             'name' => $user->name,
-            'profile_url' => asset('storage/'.$user->profile_photo_path),
+            'profile_url' => asset('storage/'.$user->profile_photo_path) ?? config('image.avatar_url'),
             'age' => $user->age,
         ]);
     }

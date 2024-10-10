@@ -38,8 +38,9 @@ class AuthController extends Controller
     public function Register(RegisterRequest $request): JsonResponse
     {
         // Check if the user has already registered recently
-        if (session('registered_time', false) && now()->diffInMinutes(session('registered_time')) < 1) {
-            return $this->failed('You have already registered. Please check your email for verification.', 'Error', 'Error from server', 429);
+        $user = User::query()->where('email', $request->input('email'))->first();
+        if ($user) {
+            return $this->failed(null, 'Fail', 'User already exists', 409);
         }
 
         try {

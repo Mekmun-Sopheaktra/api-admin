@@ -10,15 +10,15 @@ use App\Http\Controllers\api\v1\NotificationController;
 use App\Http\Controllers\api\v1\OrderController;
 use App\Http\Controllers\api\v1\ProductController;
 use App\Http\Controllers\api\v1\ProfileController;
-use App\Http\Controllers\Auth\VerificationController;
+use App\Http\Controllers\Auth\WebAuthController;
 use Illuminate\Support\Facades\Route;
 
 Route::prefix('v1')->group(function () {
     Route::post('login', [AuthController::class, 'Login'])->name('api.login');
     Route::post('register', [AuthController::class, 'Register'])->name('api.register');
 
-    Route::get('email/verify/{id}', [VerificationController::class, 'verify'])->name('verification.verify'); // Make sure to keep this as your route name
-    Route::get('email/resend', [VerificationController::class, 'resend'])->name('verification.resend');
+    Route::get('email/verify/{id}', [WebAuthController::class, 'verify'])->name('api.verification.verify'); // Make sure to keep this as your route name
+    Route::get('email/resend', [WebAuthController::class, 'resend'])->name('verification.resend');
 });
 
 //user routes
