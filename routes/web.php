@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Auth\GoogleController;
 use App\Http\Controllers\Auth\WebAuthController;
+use App\Http\Controllers\payment\PayPalController;
 use App\Livewire\Categories\All as AllCategories;
 use App\Livewire\ProductGallery\Add as AddGallery;
 use App\Livewire\ProductGallery\All as AllGallery;
@@ -65,3 +66,8 @@ Route::middleware([
 Route::prefix('v1')->group(function () {
     Route::get('email/verify/{id}/{hash}', [WebAuthController::class, 'verify'])->name('web.verification.verify');
 });
+
+Route::get('/transaction', [PayPalController::class, 'createTransaction'])->name('createTransaction');
+Route::post('/process-transaction', [PayPalController::class, 'processTransaction'])->name('processTransaction');
+Route::get('/success-transaction', [PayPalController::class, 'successTransaction'])->name('successTransaction');
+Route::get('/cancel-transaction', [PayPalController::class, 'cancelTransaction'])->name('cancelTransaction');

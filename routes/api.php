@@ -1,16 +1,16 @@
 <?php
 
-use App\Http\Controllers\api\v1\AuthController as AuthController;
-use App\Http\Controllers\admin\AuthController as AdminAuthController;
-use App\Http\Controllers\api\v1\BasketController;
-use App\Http\Controllers\api\v1\CommentController;
-use App\Http\Controllers\api\v1\HomeController;
-use App\Http\Controllers\api\v1\LikeController;
-use App\Http\Controllers\api\v1\NotificationController;
-use App\Http\Controllers\api\v1\OrderController;
-use App\Http\Controllers\api\v1\ProductController;
-use App\Http\Controllers\api\v1\ProfileController;
 use App\Http\Controllers\Auth\WebAuthController;
+use App\Http\Controllers\payment\admin\AuthController as AdminAuthController;
+use App\Http\Controllers\payment\api\v1\AuthController as AuthController;
+use App\Http\Controllers\payment\api\v1\BasketController;
+use App\Http\Controllers\payment\api\v1\CommentController;
+use App\Http\Controllers\payment\api\v1\HomeController;
+use App\Http\Controllers\payment\api\v1\LikeController;
+use App\Http\Controllers\payment\api\v1\NotificationController;
+use App\Http\Controllers\payment\api\v1\OrderController;
+use App\Http\Controllers\payment\api\v1\ProductController;
+use App\Http\Controllers\payment\api\v1\ProfileController;
 use Illuminate\Support\Facades\Route;
 
 Route::prefix('v1')->group(function () {
