@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers\Auth;
 
-use App\Http\Controllers\api\v1\AuthController;
+use Illuminate\Support\Facades\Hash;
 use Laravel\Socialite\Facades\Socialite;
 use App\Http\Controllers\Controller;
 use App\Models\User;
@@ -15,36 +15,35 @@ class GoogleController extends Controller
      */
     public function redirectToGoogle()
     {
-        info('Redirecting to Google');
         return Socialite::driver('google')->redirect();
     }
 
-    /**
-     * Handle the Google callback.
-     */
     public function handleGoogleCallback()
     {
         try {
             $googleUser = Socialite::driver('google')->stateless()->user();
-            info(json_encode($googleUser));
-//            $user = User::firstOrCreate(
-//                ['email' => $googleUser->getEmail()],
-//                [
-//                    'name' => $googleUser->getName(),
-//                    'email' => $googleUser->getEmail(),
-//                    'google_id' => $googleUser->getId(),
-//                    'avatar' => $googleUser->getAvatar(),
-//                ]
-//            );
             $name = $googleUser->getName();
             $email = $googleUser->getEmail();
-            $password = sha1($googleUser->getId().$googleUser->getEmail().$googleUser->getName());
-            $request = [
-                'name' => $name,
-                'email' => $email,
-                'password' => $password,
-            ];
-            $user = User::query()->create($request);
+            $password = Hash::make($googleUser->getId() . $googleUser->getEmail() . $googleUser->getName());
+
+            $user = User::where('email', $email)->first();
+
+            if (!$user) {
+                // User doesn't exist, create a new one
+                $request = [
+                    'name' => $name,
+                    'email' => $email,
+                    'password' => $password,
+                    'email_verified_at' => now(), // Automatically verify the email
+                ];
+                $user = User::query()->create($request);
+            } else {
+                // Optionally, mark the email as verified if user exists
+                if (is_null($user->email_verified_at)) {
+                    $user->email_verified_at = now(); // Automatically verify the email
+                    $user->save();
+                }
+            }
 
             Auth::login($user);
 
