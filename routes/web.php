@@ -31,7 +31,6 @@ Route::post('logout', [WebAuthController::class, 'logout'])->name('logout');
 Route::middleware([
     'auth:sanctum',
     config('jetstream.auth_session'),
-    'verified',
     'admin',
 ])->group(function () {
     Route::view('/dashboard', 'dashboard')->name('dashboard');
