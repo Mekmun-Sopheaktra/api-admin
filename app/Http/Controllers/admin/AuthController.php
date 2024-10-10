@@ -1,9 +1,9 @@
 <?php
 
-namespace App\Http\Controllers\payment\admin;
+namespace App\Http\Controllers\admin;
 
-use App\Http\Controllers\payment\api\Exception;
-use App\Http\Controllers\payment\Controller;
+use App\Http\Controllers\Controller;
+use App\Http\Controllers\api\Exception;
 use App\Http\Requests\Auth\LoginRequest;
 use App\Http\Requests\Auth\RegisterRequest;
 use App\Models\User;
@@ -48,7 +48,7 @@ class AuthController extends Controller
             $user = User::query()
                 ->select('id')
                 ->create($request->all());
-            info($user);
+
             $token = $user->createToken('token_base_name')->plainTextToken;
 
             return $this->success($token, 'Registration', 'Registration successful', 201);
