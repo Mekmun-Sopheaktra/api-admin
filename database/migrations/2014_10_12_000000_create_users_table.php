@@ -21,6 +21,10 @@ return new class extends Migration
             $table->boolean('is_superuser')->default(0);
             $table->boolean('is_staff')->default(0);
             $table->string('profile_photo_path', 2048)->nullable();
+            //google_id
+            $table->string('google_id')->nullable();
+            //avatar
+            $table->string('avatar')->nullable();
             $table->rememberToken();
             $table->timestamps();
         });

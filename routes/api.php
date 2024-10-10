@@ -23,7 +23,7 @@ Route::prefix('v1')->group(function () {
 
 //user routes
 Route::prefix('v1')->middleware('auth:sanctum')->group(function () {
-    Route::get('/permission', [AuthController::class, 'Permission']);
+    Route::get('permission', [AuthController::class, 'Permission']);
     Route::get('profile', [ProfileController::class, 'index'])->name('api.profile');
     Route::post('profile', [ProfileController::class, 'update'])->name('api.update.profile');
     Route::get('home', [HomeController::class, 'index'])->name('api.home');

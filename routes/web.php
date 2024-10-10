@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Auth\GoogleController;
 use App\Http\Controllers\Auth\WebAuthController;
 use App\Livewire\Categories\All as AllCategories;
 use App\Livewire\ProductGallery\Add as AddGallery;
@@ -27,6 +28,11 @@ Route::get('register-fail', function() {
 Route::get('/account/status', [WebAuthController::class, 'showStatus'])->middleware('auth')->name('verification-status');
 //logout route
 Route::post('logout', [WebAuthController::class, 'logout'])->name('logout');
+// Redirect to Google for authentication
+Route::get('auth/google', [GoogleController::class, 'redirectToGoogle'])->name('auth.google');
+
+// Handle the callback from Google
+Route::get('auth/callback/google', [GoogleController::class, 'handleGoogleCallback']);
 
 Route::middleware([
     'auth:sanctum',

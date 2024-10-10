@@ -166,6 +166,9 @@
                         <div class="mb-3">
                             <button class="btn btn-primary d-grid w-100" type="submit">Sign in</button>
                         </div>
+                        <div class="mb-3">
+                            <a class="btn btn-danger d-grid w-100" href="{{ config('app.url') }}/auth/google">Continue with Google</a>
+                        </div>
                     </form>
 
                 </div>
