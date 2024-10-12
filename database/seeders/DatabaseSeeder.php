@@ -18,7 +18,9 @@ class DatabaseSeeder extends Seeder
             BannerSeeder::class,
             ProductSeeder::class,
             UserSeeder::class,
-            NotificationSeeder::class
+            NotificationSeeder::class,
+            Tags::class,
+            PrioritySeeder::class,
         ]);
 
         User::factory()->create([
@@ -27,6 +29,15 @@ class DatabaseSeeder extends Seeder
             'password' => 'admin_admin',
             'is_superuser' => 1,
             'is_staff' => 0,
+        ]);
+
+        //create staff account
+        User::factory()->create([
+            'name' => 'staff',
+            'email' => 'staff@shop.com',
+            'password' => 'staff_staff',
+            'is_superuser' => 0,
+            'is_staff' => 1,
         ]);
     }
 }

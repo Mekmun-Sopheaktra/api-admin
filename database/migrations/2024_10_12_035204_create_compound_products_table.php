@@ -11,11 +11,11 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('category_products', function (Blueprint $table) {
-            $table->id();
-            $table->foreignId('category_id')->unsigned();
-            $table->foreignId('product_id')->unsigned();
-            $table->unique(['category_id', 'product_id']);
+        Schema::create('compound_products', function (Blueprint $table) {
+            $table->foreignId('compound_id')->unsigned();
+            $table->foreignId('products_id')->unsigned();
+            $table->integer('inventory')->default(0);
+            $table->timestamps();
         });
     }
 
@@ -24,6 +24,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('category_products');
+        Schema::dropIfExists('compound_products');
     }
 };

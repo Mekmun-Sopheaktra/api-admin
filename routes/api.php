@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\api\v1\CategoryController;
 use App\Http\Controllers\Auth\WebAuthController;
 use App\Http\Controllers\admin\AuthController as AdminAuthController;
 use App\Http\Controllers\api\v1\AuthController as AuthController;
@@ -33,9 +34,27 @@ Route::prefix('v1')->middleware('auth:sanctum')->group(function () {
         Route::get('', [HomeController::class, 'search'])->name('api.search.data');
     });
 
-    Route::get('product/wishlist', [ProductController::class, 'wishlist'])->name('api.product.wishlist');
-    Route::resource('product', ProductController::class)->except(['store', 'update', 'delete', 'edit']);
-    Route::get('product/{product}/like', [LikeController::class, 'likeProduct'])->name('api.product.like');
+    //category routes
+    Route::prefix('category')->group(function () {
+        Route::get('', [CategoryController::class, 'index'])->name('api.category');
+        Route::get('{category}', [CategoryController::class, 'show'])->name('api.category.show');
+        Route::get('{categoryId}/highlight-products', [CategoryController::class, 'highlightProducts']); // Highlighted products based on tag
+        Route::get('{categoryId}/products', [CategoryController::class, 'listProductsInCategory']); // List products in a category
+    });
+
+
+    //product routes
+    Route::prefix('product')->group(function () {
+        Route::get('wishlist', [ProductController::class, 'wishlist'])->name('api.product.wishlist');
+        Route::resource('', ProductController::class)->except(['store', 'update', 'delete', 'edit']);
+        Route::get('{product}/like', [LikeController::class, 'likeProduct'])->name('api.product.like');
+
+        Route::get('latest', [ProductController::class, 'latestProducts']); // Latest products
+        Route::get('{id}/related', [ProductController::class, 'relatedProducts']); // Related products
+        Route::get('discounted', [ProductController::class, 'discountedProducts']); // Discounted products
+        Route::get('filter', [ProductController::class, 'filterProducts']); // Filter products by price, size, and popularity
+        Route::get('new-arrivals', [ProductController::class, 'newArrivals']); // New arrivals
+    });
 
     Route::get('comment/{product}', [CommentController::class, 'index'])->name('api.comment');
     Route::post('comment', [CommentController::class, 'store'])->name('api.comment.store');

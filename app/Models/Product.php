@@ -23,10 +23,10 @@ class Product extends Model
     ];
 
     // You can use this code for many-to-many relation
-    // public function categories()
-    // {
-    //     return $this->belongsToMany(Category::class , 'category_products')->withPivot('product_id', 'category_id');
-    // }
+     public function categories()
+     {
+         return $this->belongsToMany(Category::class , 'category_products')->withPivot('product_id', 'category_id');
+     }
 
     public function category(): BelongsTo
     {
@@ -42,4 +42,16 @@ class Product extends Model
     {
         return $this->hasMany(Comment::class);
     }
+
+    public function tags()
+    {
+        return $this->belongsToMany(Tag::class, 'product_tags');
+    }
+
+    // In Product.php (Product Model)
+    public function priorities()
+    {
+        return $this->belongsToMany(Priority::class, 'category_products', 'product_id', 'priority_id');
+    }
+
 }

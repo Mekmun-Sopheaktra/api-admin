@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\api\v1;
 
+use App\Constants\ProductPriority;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\Comment\CommentResource;
 use App\Http\Resources\Product\wishListCollection;
@@ -17,9 +18,10 @@ class ProductController extends Controller
 {
     use BaseApiResponse;
 
-    public function index(): JsonResponse
+    public function index(Request $request): JsonResponse
     {
-        $products = Product::all();
+        $perPage = $request->query('per_page', env('PAGINATION_PER_PAGE', 10));
+        $products = Product::paginate($perPage);
 
         return $this->success($products);
     }
@@ -94,5 +96,99 @@ class ProductController extends Controller
     private function calculateRateForProduct($productId): float
     {
         return 3.5;
+    }
+
+
+    public function latestProducts(Request $request)
+    {
+        $sortOrder = $request->query('order', 'desc'); // Default to descending
+        $products = Product::orderBy('created_at', $sortOrder)->get();
+
+        return $this->success($products);
+    }
+
+    public function relatedProducts($id)
+    {
+        // Find the product by ID
+        $product = Product::find($id);
+
+        // Return an error if the product is not found
+        if (!$product) {
+            return $this->error('Product not found', 404);
+        }
+
+        // Retrieve the related products through the pivot table (category_products)
+        $relatedProducts = Product::whereHas('categories', function ($query) use ($product) {
+            // Find products in the same categories as the current product
+            $query->whereIn('categories.id', $product->categories->pluck('id'));
+        })
+            ->where('id', '!=', $id) // Exclude the current product
+            ->limit(5) // Limit the number of related products to return
+            ->get();
+
+        // Return the related products in the response
+        return $this->success($relatedProducts);
+    }
+
+    public function discountedProducts()
+    {
+        $discountedProducts = Product::where('discount', '>', 0) // Products with discounts
+        ->orderBy('priority', 'desc') // Sort by priority
+        ->get();
+
+        return $this->success($discountedProducts);
+    }
+
+    public function filterProducts(Request $request)
+    {
+        // Get query parameters
+        $minPrice = $request->query('min-price');
+        $maxPrice = $request->query('max-price');
+        $volume = $request->query('volume');
+        $popular = $request->query('popular');
+        $perPage = $request->query('per_page', 10); // Default to 10 items per page
+
+        // Initialize query
+        $query = Product::query();
+
+        // Filter by min and max price
+        if ($minPrice) {
+            $query->where('price', '>=', $minPrice); // Filter by minimum price
+        }
+
+        if ($maxPrice) {
+            $query->where('price', '<=', $maxPrice); // Filter by maximum price
+        }
+
+        // Filter by volume
+        if ($volume) {
+            $query->where('volume', $volume); // Filter by volume
+        }
+
+        // Sort by popularity if requested
+        if ($popular) {
+            $query->orderBy('view_count', $popular); // Sort by view_count (ascending or descending)
+        }
+
+        // Paginate the results
+        $filteredProducts = $query->paginate($perPage);
+
+        // Return the paginated results as a successful response
+        return $this->success($filteredProducts);
+    }
+
+    public function newArrivals(Request $request)
+    {
+        // Retrieve pagination parameters from request or default to 10 per page
+        $perPage = $request->input('per_page', 10);
+
+        // Get all products, prioritize NEW_ARRIVAL products by ordering them to the top
+        $newArrivalProducts = Product::select('products.*') // Select all fields from products
+        ->leftJoin('priority', 'products.priority', '=', 'priority.name') // Join with the priority table
+        ->orderByRaw("CASE WHEN priority.name = '" . ProductPriority::NEW_ARRIVAL . "' THEN 0 ELSE 1 END") // Prioritize NEW_ARRIVAL
+        ->orderBy('created_at', 'desc') // Fallback order by creation date
+        ->paginate($perPage);
+
+        return $this->success($newArrivalProducts);
     }
 }

@@ -33,9 +33,9 @@ class Category extends Model
     }
 
     // You can use this code for many-to-many relation
-    //    public function products()
-    //    {
-    //        return $this->belongsToMany(Product::class ,'category_products');
-    //    }
+    public function products()
+    {
+        return $this->belongsToMany(Product::class, 'category_products');
+    }
 
 }
